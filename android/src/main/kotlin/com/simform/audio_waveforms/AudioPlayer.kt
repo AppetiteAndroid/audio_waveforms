@@ -164,7 +164,8 @@ class AudioPlayer(
     fun setRate(rate: Float?, result: MethodChannel.Result) {
         try {
             if (rate != null) {
-                player?.setPlaybackSpeed(rate)
+                val param = PlaybackParameters(speed)
+                player?.setPlaybackParameters(param)
                 result.success(true)
             } else {
                 result.success(false)
