@@ -33,6 +33,8 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
             } catch {
                 result(FlutterError(code: Constants.audioWaveforms, message: "Failed to prepare player", details: nil))
             }
+            player?.enableRate = true
+            player?.rate = 1.0
             player?.prepareToPlay()
             player?.volume = Float(volume ?? 1.0)
             result(true)
@@ -106,6 +108,11 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
         result(true)
     }
     
+    func setRate(_ rate: Double?, _ result: @escaping FlutterResult) {
+        player?.rate = Float(rate ?? 1.0);
+        result(true)
+    }
+
     func seekTo(_ time: Int?, _ result: @escaping FlutterResult) {
         if(time != nil) {
             player?.currentTime = Double(time! / 1000)
