@@ -55,26 +55,21 @@ class PlayerController extends ChangeNotifier {
 
   /// A stream to get current state of the player. This stream
   /// will emit event whenever there is change in the playerState.
-  Stream<PlayerState> get onPlayerStateChanged =>
-      PlatformStreams.instance.onPlayerStateChanged.filter(playerKey);
+  Stream<PlayerState> get onPlayerStateChanged => PlatformStreams.instance.onPlayerStateChanged.filter(playerKey);
 
   /// A stream to get current duration. This stream will emit
   /// every 200 milliseconds. Emitted duration is in milliseconds.
-  Stream<int> get onCurrentDurationChanged =>
-      PlatformStreams.instance.onDurationChanged.filter(playerKey);
+  Stream<int> get onCurrentDurationChanged => PlatformStreams.instance.onDurationChanged.filter(playerKey);
 
   /// A stream to get current extracted waveform data. This stream will emit
   /// list of doubles which are waveform data point.
-  Stream<List<double>> get onCurrentExtractedWaveformData =>
-      PlatformStreams.instance.onCurrentExtractedWaveformData.filter(playerKey);
+  Stream<List<double>> get onCurrentExtractedWaveformData => PlatformStreams.instance.onCurrentExtractedWaveformData.filter(playerKey);
 
   /// A stream to get current progress of waveform extraction.
-  Stream<double> get onExtractionProgress =>
-      PlatformStreams.instance.onExtractionProgress.filter(playerKey);
+  Stream<double> get onExtractionProgress => PlatformStreams.instance.onExtractionProgress.filter(playerKey);
 
   /// A stream to get events when audio is finished playing.
-  Stream<void> get onCompletion =>
-      PlatformStreams.instance.onCompletion.filter(playerKey);
+  Stream<void> get onCompletion => PlatformStreams.instance.onCompletion.filter(playerKey);
 
   PlayerController() {
     if (!PlatformStreams.instance.isInitialised) {
@@ -85,8 +80,7 @@ class PlayerController extends ChangeNotifier {
 
   void _setPlayerState(PlayerState state) {
     _playerState = state;
-    PlatformStreams.instance
-        .addPlayerStateEvent(PlayerIdentifier(playerKey, state));
+    PlatformStreams.instance.addPlayerStateEvent(PlayerIdentifier(playerKey, state));
   }
 
   /// Calls platform to prepare player.
@@ -185,10 +179,8 @@ class PlayerController extends ChangeNotifier {
     FinishMode finishMode = FinishMode.stop,
     bool forceRefresh = true,
   }) async {
-    if (_playerState == PlayerState.initialized ||
-        _playerState == PlayerState.paused) {
-      final isStarted = await AudioWaveformsInterface.instance
-          .startPlayer(playerKey, finishMode);
+    if (_playerState == PlayerState.initialized || _playerState == PlayerState.paused) {
+      final isStarted = await AudioWaveformsInterface.instance.startPlayer(playerKey, finishMode);
       if (isStarted) {
         _setPlayerState(PlayerState.playing);
       } else {
@@ -201,8 +193,7 @@ class PlayerController extends ChangeNotifier {
 
   /// Pauses currently playing audio.
   Future<void> pausePlayer() async {
-    final isPaused =
-        await AudioWaveformsInterface.instance.pausePlayer(playerKey);
+    final isPaused = await AudioWaveformsInterface.instance.pausePlayer(playerKey);
     if (isPaused) {
       _setPlayerState(PlayerState.paused);
     }
@@ -211,8 +202,7 @@ class PlayerController extends ChangeNotifier {
 
   /// A function to stop player. After calling this, resources are freed.
   Future<void> stopPlayer() async {
-    final isStopped =
-        await AudioWaveformsInterface.instance.stopPlayer(playerKey);
+    final isStopped = await AudioWaveformsInterface.instance.stopPlayer(playerKey);
     if (isStopped) {
       _setPlayerState(PlayerState.stopped);
     }
@@ -227,8 +217,7 @@ class PlayerController extends ChangeNotifier {
   ///
   /// Default to 1.0
   Future<bool> setVolume(double volume) async {
-    final result =
-        await AudioWaveformsInterface.instance.setVolume(volume, playerKey);
+    final result = await AudioWaveformsInterface.instance.setVolume(volume, playerKey);
     return result;
   }
 
@@ -237,8 +226,7 @@ class PlayerController extends ChangeNotifier {
   ///
   /// Default to 1.0
   Future<bool> setRate(double rate) async {
-    final result =
-        await AudioWaveformsInterface.instance.setRate(rate, playerKey);
+    final result = await AudioWaveformsInterface.instance.setRate(rate, playerKey);
     return result;
   }
 
@@ -249,8 +237,7 @@ class PlayerController extends ChangeNotifier {
   ///
   /// Default to Duration.max.
   Future<int> getDuration([DurationType? durationType]) async {
-    final duration = await AudioWaveformsInterface.instance
-        .getDuration(playerKey, durationType?.index ?? 1);
+    final duration = await AudioWaveformsInterface.instance.getDuration(playerKey, durationType?.index ?? 1);
     return duration ?? -1;
   }
 
@@ -290,6 +277,11 @@ class PlayerController extends ChangeNotifier {
     PlatformStreams.instance.dispose();
     await AudioWaveformsInterface.instance.stopAllPlayers();
     PlatformStreams.instance.playerControllerFactory.remove(this);
+  }
+
+  void pauseAllPlayers() async {
+    await AudioWaveformsInterface.instance.pauseAllPlayers();
+    notifyListeners();
   }
 
   /// Sets [_shouldRefresh] flag with provided boolean parameter.

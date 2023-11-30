@@ -1,8 +1,7 @@
 class Constants {
   Constants._();
 
-  static const String methodChannelName =
-      'simform_audio_waveforms_plugin/methods';
+  static const String methodChannelName = 'simform_audio_waveforms_plugin/methods';
   static const String initRecorder = 'initRecorder';
   static const String startRecording = 'startRecording';
   static const String stopRecording = 'stopRecording';
@@ -36,14 +35,14 @@ class Constants {
   static const String current = "current";
   static const String onCurrentDuration = "onCurrentDuration";
   static const String stopAllPlayers = "stopAllPlayers";
+  static const String pauseAllPlayers = "pauseAllPlayers";
   static const String onDidFinishPlayingAudio = "onDidFinishPlayingAudio";
   static const String finishtype = "finishType";
   static const String finishMode = "finishMode";
   static const String extractWaveformData = "extractWaveformData";
   static const String noOfSamples = "noOfSamples";
   static const String waveformData = "waveformData";
-  static const String onCurrentExtractedWaveformData =
-      "onCurrentExtractedWaveformData";
+  static const String onCurrentExtractedWaveformData = "onCurrentExtractedWaveformData";
   static const String useLegacyNormalization = "useLegacyNormalization";
   static const String updateFrequency = "updateFrequency";
 }

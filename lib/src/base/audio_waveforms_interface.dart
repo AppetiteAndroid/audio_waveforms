@@ -5,8 +5,7 @@ class AudioWaveformsInterface {
 
   static AudioWaveformsInterface instance = AudioWaveformsInterface._();
 
-  static const MethodChannel _methodChannel =
-      MethodChannel(Constants.methodChannelName);
+  static const MethodChannel _methodChannel = MethodChannel(Constants.methodChannelName);
 
   ///platform call to start recording
   Future<bool> record({
@@ -57,23 +56,20 @@ class AudioWaveformsInterface {
 
   ///platform call to pause recording
   Future<bool?> pause() async {
-    final isRecording =
-        await _methodChannel.invokeMethod(Constants.pauseRecording);
+    final isRecording = await _methodChannel.invokeMethod(Constants.pauseRecording);
     return isRecording;
   }
 
   ///platform call to stop recording
   Future<List<String?>?> stop() async {
-    final audioInfo =
-        await _methodChannel.invokeMethod(Constants.stopRecording);
+    final audioInfo = await _methodChannel.invokeMethod(Constants.stopRecording);
     return List.from(audioInfo ?? []);
   }
 
   ///platform call to resume recording.
   ///This method is only required for Android platform
   Future<bool> resume() async {
-    final isRecording =
-        await _methodChannel.invokeMethod(Constants.resumeRecording);
+    final isRecording = await _methodChannel.invokeMethod(Constants.resumeRecording);
     return isRecording ?? false;
   }
 
@@ -85,8 +81,7 @@ class AudioWaveformsInterface {
 
   ///platform call to check microphone permission
   Future<bool> checkPermission() async {
-    var hasPermission =
-        await _methodChannel.invokeMethod(Constants.checkPermission);
+    var hasPermission = await _methodChannel.invokeMethod(Constants.checkPermission);
     return hasPermission ?? false;
   }
 
@@ -117,15 +112,13 @@ class AudioWaveformsInterface {
 
   ///platform call to stop player
   Future<bool> stopPlayer(String key) async {
-    var result = await _methodChannel
-        .invokeMethod(Constants.stopPlayer, {Constants.playerKey: key});
+    var result = await _methodChannel.invokeMethod(Constants.stopPlayer, {Constants.playerKey: key});
     return result ?? false;
   }
 
   ///platform call to pause player
   Future<bool> pausePlayer(String key) async {
-    var result = await _methodChannel
-        .invokeMethod(Constants.pausePlayer, {Constants.playerKey: key});
+    var result = await _methodChannel.invokeMethod(Constants.pausePlayer, {Constants.playerKey: key});
     return result ?? false;
   }
 
@@ -158,8 +151,7 @@ class AudioWaveformsInterface {
 
   ///platform call to seek audio at provided position
   Future<bool> seekTo(String key, int progress) async {
-    var result = await _methodChannel.invokeMethod(Constants.seekTo,
-        {Constants.progress: progress, Constants.playerKey: key});
+    var result = await _methodChannel.invokeMethod(Constants.seekTo, {Constants.progress: progress, Constants.playerKey: key});
     return result ?? false;
   }
 
@@ -168,8 +160,7 @@ class AudioWaveformsInterface {
     required String path,
     required int noOfSamples,
   }) async {
-    final result =
-        await _methodChannel.invokeMethod(Constants.extractWaveformData, {
+    final result = await _methodChannel.invokeMethod(Constants.extractWaveformData, {
       Constants.playerKey: key,
       Constants.path: path,
       Constants.noOfSamples: noOfSamples,
@@ -179,6 +170,11 @@ class AudioWaveformsInterface {
 
   Future<bool> stopAllPlayers() async {
     var result = await _methodChannel.invokeMethod(Constants.stopAllPlayers);
+    return result ?? false;
+  }
+
+  Future<bool> pauseAllPlayers() async {
+    var result = await _methodChannel.invokeMethod(Constants.pauseAllPlayers);
     return result ?? false;
   }
 
@@ -195,8 +191,7 @@ class AudioWaveformsInterface {
           break;
         case Constants.onDidFinishPlayingAudio:
           var key = call.arguments[Constants.playerKey];
-          var playerState = (call.arguments[Constants.finishtype] is int) &&
-                  call.arguments[Constants.finishtype] == 0
+          var playerState = (call.arguments[Constants.finishtype] is int) && call.arguments[Constants.finishtype] == 0
               ? PlayerState.playing
               : call.arguments[Constants.finishtype] == 1
                   ? PlayerState.paused
@@ -206,15 +201,13 @@ class AudioWaveformsInterface {
           PlatformStreams.instance.addCompletionEvent(completionIdentifier);
           PlatformStreams.instance.addPlayerStateEvent(stateIdentifier);
           if (PlatformStreams.instance.playerControllerFactory[key] != null) {
-            PlatformStreams.instance.playerControllerFactory[key]
-                ?._playerState = playerState;
+            PlatformStreams.instance.playerControllerFactory[key]?._playerState = playerState;
           }
           break;
         case Constants.onCurrentExtractedWaveformData:
           var key = call.arguments[Constants.playerKey];
           var progress = call.arguments[Constants.progress];
-          var waveformData =
-              List<double>.from(call.arguments[Constants.waveformData]);
+          var waveformData = List<double>.from(call.arguments[Constants.waveformData]);
           PlatformStreams.instance.addExtractedWaveformDataEvent(
             PlayerIdentifier<List<double>>(key, waveformData),
           );
