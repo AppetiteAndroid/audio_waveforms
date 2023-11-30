@@ -56,6 +56,7 @@ object Constants {
     const val current = "current"
     const val onCurrentDuration = "onCurrentDuration"
     const val stopAllPlayers = "stopAllPlayers"
+    const val pauseAllPlayers = "pauseAllPlayers"
     const val onDidFinishPlayingAudio = "onDidFinishPlayingAudio"
     const val finishMode = "finishMode"
     const val finishType = "finishType"

@@ -49,6 +49,7 @@ struct Constants {
     static let current = "current"
     static let playerKey = "playerKey"
     static let stopAllPlayers = "stopAllPlayers"
+    static let pauseAllPlayers = "pauseAllPlayers"
     static let onDidFinishPlayingAudio = "onDidFinishPlayingAudio"
     static let finishMode = "finishMode"
     static let finishType = "finishType"
