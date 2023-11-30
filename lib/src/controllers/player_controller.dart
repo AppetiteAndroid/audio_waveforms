@@ -7,7 +7,7 @@ import 'package:audio_waveforms/src/base/platform_streams.dart';
 import 'package:audio_waveforms/src/base/player_identifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:collection/collection.dart';
 part '../base/audio_waveforms_interface.dart';
 
 class PlayerController extends ChangeNotifier {
@@ -32,6 +32,10 @@ class PlayerController extends ChangeNotifier {
   int get maxDuration => _maxDuration;
 
   final UniqueKey _playerKey = UniqueKey();
+
+  int _index = -1;
+
+  int get index => _index;
 
   /// An unique key string associated with [this] player only
   String get playerKey => _playerKey.toString();
@@ -111,8 +115,15 @@ class PlayerController extends ChangeNotifier {
     double? volume,
     bool shouldExtractWaveform = true,
     int noOfSamples = 100,
+    int index = -1,
   }) async {
     path = Uri.parse(path).path;
+    _index = index;
+    if (_index > 0) {
+      onCompletion.listen((event) {
+        playNext();
+      });
+    }
     final isPrepared = await AudioWaveformsInterface.instance.preparePlayer(
       path: path,
       key: playerKey,
@@ -298,6 +309,12 @@ class PlayerController extends ChangeNotifier {
     } catch (e) {
       return false;
     }
+  }
+
+  playNext() {
+    PlatformStreams.instance.playerControllerFactory.values.firstWhereOrNull((element) => element.index == index - 1)?.startPlayer(
+          finishMode: FinishMode.pause,
+        );
   }
 
   /// Sets [_shouldRefresh] flag with provided boolean parameter.

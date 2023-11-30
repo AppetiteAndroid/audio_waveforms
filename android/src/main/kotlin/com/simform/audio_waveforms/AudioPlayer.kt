@@ -10,7 +10,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import io.flutter.plugin.common.MethodChannel
-import java.lang.Exception
 import kotlin.Exception
 
 class AudioPlayer(
