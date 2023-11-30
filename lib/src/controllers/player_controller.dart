@@ -116,10 +116,11 @@ class PlayerController extends ChangeNotifier {
     bool shouldExtractWaveform = true,
     int noOfSamples = 100,
     int index = -1,
+    bool shouldPlayNext = false,
   }) async {
     path = Uri.parse(path).path;
     _index = index;
-    if (_index > 0) {
+    if (_index > 0 && shouldPlayNext) {
       onCompletion.listen((event) {
         playNext();
       });
