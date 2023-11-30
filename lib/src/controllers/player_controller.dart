@@ -141,13 +141,6 @@ class PlayerController extends ChangeNotifier {
       frequency: _getFrequency(),
       volume: volume,
     );
-    if (isPrepared) {
-      getDuration().then((value) {
-        _maxDuration = value;
-        notifyListeners();
-      });
-      _setPlayerState(PlayerState.initialized);
-    }
     if (shouldExtractWaveform) {
       extractWaveformData(
         path: path,
@@ -160,6 +153,13 @@ class PlayerController extends ChangeNotifier {
           notifyListeners();
         },
       );
+    }
+    if (isPrepared) {
+      await getDuration().then((value) {
+        _maxDuration = value;
+        notifyListeners();
+      });
+      _setPlayerState(PlayerState.initialized);
     }
     notifyListeners();
   }
@@ -204,10 +204,10 @@ class PlayerController extends ChangeNotifier {
     bool forceRefresh = true,
   }) async {
     if (_playerState == PlayerState.initialized || _playerState == PlayerState.paused) {
-      final isStarted = await AudioWaveformsInterface.instance.startPlayer(playerKey, finishMode);
       if (_listenLastRate) {
         await setRate(_defaultRate ?? PlatformStreams.instance.lastRate);
       }
+      final isStarted = await AudioWaveformsInterface.instance.startPlayer(playerKey, finishMode);
       if (isStarted) {
         _setPlayerState(PlayerState.playing);
       } else {
@@ -234,6 +234,10 @@ class PlayerController extends ChangeNotifier {
       _setPlayerState(PlayerState.stopped);
     }
     notifyListeners();
+  }
+
+  void updateIndex(int index) {
+    _index = index;
   }
 
   /// Sets volume for this player. Doesn't throw Exception.
