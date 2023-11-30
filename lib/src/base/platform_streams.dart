@@ -17,6 +17,8 @@ class PlatformStreams {
 
   bool isInitialised = false;
 
+  double lastRate = 1;
+
   /// Initialises native method call handlers and stream. Should be called
   /// only once before [dispose].
   Future<void> init() async {

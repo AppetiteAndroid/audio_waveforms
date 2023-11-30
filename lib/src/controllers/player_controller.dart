@@ -44,6 +44,8 @@ class PlayerController extends ChangeNotifier {
 
   bool get shouldClearLabels => _shouldClearLabels;
 
+  double get lastRate => PlatformStreams.instance.lastRate;
+
   /// Rate of updating the reported current duration. Making it high will
   /// cause reporting duration at faster rate which also causes UI to look
   /// smoother.
@@ -117,6 +119,8 @@ class PlayerController extends ChangeNotifier {
     int noOfSamples = 100,
     int index = -1,
     bool shouldPlayNext = false,
+    bool listenLastRate = false,
+    double? defaultRate,
   }) async {
     path = Uri.parse(path).path;
     _index = index;
@@ -138,7 +142,9 @@ class PlayerController extends ChangeNotifier {
       });
       _setPlayerState(PlayerState.initialized);
     }
-
+    if (listenLastRate) {
+      setRate(defaultRate ?? PlatformStreams.instance.lastRate);
+    }
     if (shouldExtractWaveform) {
       extractWaveformData(
         path: path,
@@ -241,6 +247,7 @@ class PlayerController extends ChangeNotifier {
   ///
   /// Default to 1.0
   Future<bool> setRate(double rate) async {
+    PlatformStreams.instance.lastRate = rate;
     final result = await AudioWaveformsInterface.instance.setRate(rate, playerKey);
     return result;
   }
