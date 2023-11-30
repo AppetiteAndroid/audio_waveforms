@@ -311,9 +311,12 @@ class PlayerController extends ChangeNotifier {
   }
 
   playNext() {
-    PlatformStreams.instance.playerControllerFactory.values.firstWhereOrNull((element) => element.index == index - 1)?.startPlayer(
+    final players = PlatformStreams.instance.playerControllerFactory.values.toList();
+    players.sort((a, b) => a.index.compareTo(b.index));
+    players.lastWhereOrNull((element) => element.index < index)?.startPlayer(
           finishMode: FinishMode.pause,
         );
+    PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(playerKey, 0));
   }
 
   /// Sets [_shouldRefresh] flag with provided boolean parameter.
