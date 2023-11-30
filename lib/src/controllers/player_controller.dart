@@ -33,7 +33,11 @@ class PlayerController extends ChangeNotifier {
 
   final UniqueKey _playerKey = UniqueKey();
 
+  bool _listenLastRate = false;
+
   int _index = -1;
+
+  double? _defaultRate;
 
   int get index => _index;
 
@@ -122,6 +126,8 @@ class PlayerController extends ChangeNotifier {
     bool listenLastRate = false,
     double? defaultRate,
   }) async {
+    _listenLastRate = listenLastRate;
+    _defaultRate = defaultRate;
     path = Uri.parse(path).path;
     _index = index;
     if (_index > 0 && shouldPlayNext) {
@@ -141,9 +147,6 @@ class PlayerController extends ChangeNotifier {
         notifyListeners();
       });
       _setPlayerState(PlayerState.initialized);
-    }
-    if (listenLastRate) {
-      setRate(defaultRate ?? PlatformStreams.instance.lastRate);
     }
     if (shouldExtractWaveform) {
       extractWaveformData(
@@ -201,6 +204,9 @@ class PlayerController extends ChangeNotifier {
     bool forceRefresh = true,
   }) async {
     if (_playerState == PlayerState.initialized || _playerState == PlayerState.paused) {
+      if (_listenLastRate) {
+        await setRate(_defaultRate ?? PlatformStreams.instance.lastRate);
+      }
       final isStarted = await AudioWaveformsInterface.instance.startPlayer(playerKey, finishMode);
       if (isStarted) {
         _setPlayerState(PlayerState.playing);
