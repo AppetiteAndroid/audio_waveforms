@@ -238,6 +238,7 @@ class PlayerController extends ChangeNotifier {
 
   void updateIndex(int index) {
     _index = index;
+    PlatformStreams.instance.playerControllerFactory.addAll({playerKey: this});
   }
 
   /// Sets volume for this player. Doesn't throw Exception.
