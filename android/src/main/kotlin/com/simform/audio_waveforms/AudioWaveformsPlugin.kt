@@ -180,8 +180,8 @@ class AudioWaveformsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 result.success(true)
             }
             Constants.pauseAllPlayers -> {
-                for ((key, _) in audioPlayers) {
-                    audioPlayers[key]?.pause(result)
+                for ((_, player) in audioPlayers) {
+                   player?.pause(result)
                 }
                 result.success(true)
             }

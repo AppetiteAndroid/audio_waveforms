@@ -24,38 +24,27 @@ class PlatformStreams {
     // initialised due to race condition when using widget in ListView.builder.
     isInitialised = true;
 
-    _currentDurationController =
-        StreamController<PlayerIdentifier<int>>.broadcast();
-    _playerStateController =
-        StreamController<PlayerIdentifier<PlayerState>>.broadcast();
-    _extractedWaveformDataController =
-        StreamController<PlayerIdentifier<List<double>>>.broadcast();
-    _extractionProgressController =
-        StreamController<PlayerIdentifier<double>>.broadcast();
-    _completionController =
-        StreamController<PlayerIdentifier<void>>.broadcast();
+    _currentDurationController = StreamController<PlayerIdentifier<int>>.broadcast();
+    _playerStateController = StreamController<PlayerIdentifier<PlayerState>>.broadcast();
+    _extractedWaveformDataController = StreamController<PlayerIdentifier<List<double>>>.broadcast();
+    _extractionProgressController = StreamController<PlayerIdentifier<double>>.broadcast();
+    _completionController = StreamController<PlayerIdentifier<void>>.broadcast();
     await AudioWaveformsInterface.instance.setMethodCallHandler();
   }
 
-  Stream<PlayerIdentifier<int>> get onDurationChanged =>
-      _currentDurationController.stream;
+  Stream<PlayerIdentifier<int>> get onDurationChanged => _currentDurationController.stream;
 
-  Stream<PlayerIdentifier<PlayerState>> get onPlayerStateChanged =>
-      _playerStateController.stream;
+  Stream<PlayerIdentifier<PlayerState>> get onPlayerStateChanged => _playerStateController.stream;
 
-  Stream<PlayerIdentifier<List<double>>> get onCurrentExtractedWaveformData =>
-      _extractedWaveformDataController.stream;
+  Stream<PlayerIdentifier<List<double>>> get onCurrentExtractedWaveformData => _extractedWaveformDataController.stream;
 
-  Stream<PlayerIdentifier<double>> get onExtractionProgress =>
-      _extractionProgressController.stream;
+  Stream<PlayerIdentifier<double>> get onExtractionProgress => _extractionProgressController.stream;
 
-  Stream<PlayerIdentifier<void>> get onCompletion =>
-      _completionController.stream;
+  Stream<PlayerIdentifier<void>> get onCompletion => _completionController.stream;
 
   late StreamController<PlayerIdentifier<int>> _currentDurationController;
   late StreamController<PlayerIdentifier<PlayerState>> _playerStateController;
-  late StreamController<PlayerIdentifier<List<double>>>
-      _extractedWaveformDataController;
+  late StreamController<PlayerIdentifier<List<double>>> _extractedWaveformDataController;
   late StreamController<PlayerIdentifier<double>> _extractionProgressController;
   late StreamController<PlayerIdentifier<void>> _completionController;
 
@@ -71,8 +60,7 @@ class PlatformStreams {
     }
   }
 
-  void addExtractedWaveformDataEvent(
-      PlayerIdentifier<List<double>> playerIdentifier) {
+  void addExtractedWaveformDataEvent(PlayerIdentifier<List<double>> playerIdentifier) {
     if (!_extractedWaveformDataController.isClosed) {
       _extractedWaveformDataController.add(playerIdentifier);
     }

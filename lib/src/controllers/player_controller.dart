@@ -120,7 +120,10 @@ class PlayerController extends ChangeNotifier {
       volume: volume,
     );
     if (isPrepared) {
-      _maxDuration = await getDuration();
+      getDuration().then((value) {
+        _maxDuration = value;
+        notifyListeners();
+      });
       _setPlayerState(PlayerState.initialized);
     }
 
@@ -261,7 +264,7 @@ class PlayerController extends ChangeNotifier {
   @override
   void dispose() async {
     if (playerState != PlayerState.stopped) await stopPlayer();
-    PlatformStreams.instance.playerControllerFactory.remove(this);
+    PlatformStreams.instance.playerControllerFactory.remove(playerKey);
     if (PlatformStreams.instance.playerControllerFactory.length == 1) {
       PlatformStreams.instance.dispose();
     }
@@ -273,16 +276,28 @@ class PlayerController extends ChangeNotifier {
   ///
   /// This method will close the stream and free resources taken by all
   /// players. This method will not dispose controller.
-  void stopAllPlayers() async {
-    PlatformStreams.instance.dispose();
+  Future<bool> stopAllPlayers() async {
+    //PlatformStreams.instance.dispose();
     await AudioWaveformsInterface.instance.stopAllPlayers();
-    PlatformStreams.instance.playerControllerFactory.remove(this);
+    PlatformStreams.instance.playerControllerFactory.remove(playerKey);
+    return true;
   }
 
   Future<bool> pauseAllPlayers() async {
-    final result = await AudioWaveformsInterface.instance.pauseAllPlayers();
-    notifyListeners();
-    return result;
+    try {
+      for (var v in PlatformStreams.instance.playerControllerFactory.values) {
+        if (v.playerState == PlayerState.playing) {
+          await v.pausePlayer();
+        }
+        if (await v.onCurrentDurationChanged.last > 0) {
+          await AudioWaveformsInterface.instance.seekTo(v.playerKey, 0);
+          PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(v.playerKey, 0));
+        }
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Sets [_shouldRefresh] flag with provided boolean parameter.

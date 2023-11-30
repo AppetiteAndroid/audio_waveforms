@@ -124,7 +124,7 @@ public class SwiftAudioWaveformsPlugin: NSObject, FlutterPlugin {
                 audioPlayers[playerKey] = nil
             }
             result(true)
-        case Constants.stopAllPlayers:
+        case Constants.pauseAllPlayers:
             for (playerKey,_) in audioPlayers{
                 audioPlayers[playerKey]?.pausePlayer(result: result)
             }

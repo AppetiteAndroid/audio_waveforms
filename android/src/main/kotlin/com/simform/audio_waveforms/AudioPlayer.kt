@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import io.flutter.plugin.common.MethodChannel
 import java.lang.Exception
+import kotlin.Exception
 
 class AudioPlayer(
     context: Context,
@@ -86,10 +88,15 @@ class AudioPlayer(
     }
 
     fun seekToPosition(result: MethodChannel.Result, progress: Long?) {
-        if (progress != null) {
-            player?.seekTo(progress)
-            result.success(true)
-        } else {
+        try {
+            if (progress != null) {
+                player?.seekTo(progress)
+                result.success(true)
+            } else {
+                result.success(false)
+            }
+        }catch (e:Exception){
+            Log.wtf("Player",e.message)
             result.success(false)
         }
     }
