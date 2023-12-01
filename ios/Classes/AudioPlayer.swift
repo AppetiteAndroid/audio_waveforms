@@ -29,7 +29,7 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
                 return
             }
             do {
-                try AVAudioSession.sharedInstance().setCategory(.playback)
+                try AVAudioSession.sharedInstance().setCategory(.ambient)
                 player = try AVAudioPlayer(contentsOf: audioUrl!)
             } catch {
                 result(FlutterError(code: Constants.audioWaveforms, message: "Failed to prepare player", details: nil))

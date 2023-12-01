@@ -41,6 +41,8 @@ class PlayerController extends ChangeNotifier {
 
   int get index => _index;
 
+  bool isPlayNextStreamInited = false;
+
   /// An unique key string associated with [this] player only
   String get playerKey => _playerKey.toString();
 
@@ -131,6 +133,7 @@ class PlayerController extends ChangeNotifier {
     path = Uri.parse(path).path;
     _index = index;
     if (_index > 0 && shouldPlayNext) {
+      isPlayNextStreamInited = true;
       onCompletion.listen((event) {
         playNext();
       });
@@ -238,6 +241,12 @@ class PlayerController extends ChangeNotifier {
 
   void updateIndex(int index) {
     _index = index;
+    if (_index > 0 && !isPlayNextStreamInited) {
+      isPlayNextStreamInited = true;
+      onCompletion.listen((event) {
+        playNext();
+      });
+    }
     PlatformStreams.instance.playerControllerFactory.addAll({playerKey: this});
   }
 
@@ -319,7 +328,7 @@ class PlayerController extends ChangeNotifier {
         if (v.playerState == PlayerState.playing) {
           await v.pausePlayer();
         }
-        if (playerState != PlayerState.initialized && playerState != PlayerState.stopped) {
+        if (playerState != PlayerState.stopped) {
           await AudioWaveformsInterface.instance.seekTo(v.playerKey, 0);
           PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(v.playerKey, 0));
         }
@@ -333,6 +342,8 @@ class PlayerController extends ChangeNotifier {
   playNext() {
     final players = PlatformStreams.instance.playerControllerFactory.values.toList();
     players.sort((a, b) => a.index.compareTo(b.index));
+    print("play next ${players.map((e) => e.index)}");
+    print("play next current index $index");
     players.lastWhereOrNull((element) => element.index < index)?.startPlayer(
           finishMode: FinishMode.pause,
         );
