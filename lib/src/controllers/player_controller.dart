@@ -52,6 +52,10 @@ class PlayerController extends ChangeNotifier {
 
   double get lastRate => PlatformStreams.instance.lastRate;
 
+  bool _isPrepared = false;
+
+  bool get isPrepared => _isPrepared;
+
   /// Rate of updating the reported current duration. Making it high will
   /// cause reporting duration at faster rate which also causes UI to look
   /// smoother.
@@ -138,7 +142,7 @@ class PlayerController extends ChangeNotifier {
         playNext();
       });
     }
-    final isPrepared = await AudioWaveformsInterface.instance.preparePlayer(
+    _isPrepared = await AudioWaveformsInterface.instance.preparePlayer(
       path: path,
       key: playerKey,
       frequency: _getFrequency(),
@@ -328,9 +332,13 @@ class PlayerController extends ChangeNotifier {
         if (v.playerState == PlayerState.playing) {
           await v.pausePlayer();
         }
-        if (playerState != PlayerState.stopped && v.playerKey != this.playerKey) {
-          await AudioWaveformsInterface.instance.seekTo(v.playerKey, 0);
-          PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(v.playerKey, 0));
+        if (v.isPrepared == true && playerState != PlayerState.stopped && v.playerKey != playerKey && await v.getDuration(DurationType.current) > 0) {
+          try {
+            await AudioWaveformsInterface.instance.seekTo(v.playerKey, 0);
+            PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(v.playerKey, 0));
+          } catch (e) {
+            debugPrint(e.toString());
+          }
         }
       }
       return true;
