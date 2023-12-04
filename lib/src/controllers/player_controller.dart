@@ -328,7 +328,7 @@ class PlayerController extends ChangeNotifier {
         if (v.playerState == PlayerState.playing) {
           await v.pausePlayer();
         }
-        if (playerState != PlayerState.stopped) {
+        if (playerState != PlayerState.stopped && v.playerKey != this.playerKey) {
           await AudioWaveformsInterface.instance.seekTo(v.playerKey, 0);
           PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(v.playerKey, 0));
         }
