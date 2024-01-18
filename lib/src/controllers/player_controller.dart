@@ -352,7 +352,7 @@ class PlayerController extends ChangeNotifier {
     players.sort((a, b) => a.index.compareTo(b.index));
     print("play next ${players.map((e) => e.index)}");
     print("play next current index $index");
-    players.lastWhereOrNull((element) => element.index < index)?.startPlayer(
+    players.lastWhereOrNull((element) => element.index < index && element.index >= 0)?.startPlayer(
           finishMode: FinishMode.pause,
         );
     PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(playerKey, 0));
