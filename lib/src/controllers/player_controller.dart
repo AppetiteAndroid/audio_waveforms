@@ -251,7 +251,6 @@ class PlayerController extends ChangeNotifier {
         playNext();
       });
     }
-    PlatformStreams.instance.playerControllerFactory.addAll({playerKey: this});
   }
 
   /// Sets volume for this player. Doesn't throw Exception.
@@ -295,6 +294,15 @@ class PlayerController extends ChangeNotifier {
     if (progress < 0) return;
     if (_playerState == PlayerState.playing) {
       await AudioWaveformsInterface.instance.seekTo(playerKey, progress);
+    }
+  }
+
+  Future<void> setToZero() async {
+    try {
+      await AudioWaveformsInterface.instance.seekTo(playerKey, 0);
+      PlatformStreams.instance.addCurrentDurationEvent(PlayerIdentifier<int>(playerKey, 0));
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
