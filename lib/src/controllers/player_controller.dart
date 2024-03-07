@@ -131,17 +131,20 @@ class PlayerController extends ChangeNotifier {
     bool shouldPlayNext = false,
     bool listenLastRate = false,
     double? defaultRate,
+    UpdateFrequency updateFrequency = UpdateFrequency.low,
   }) async {
     _listenLastRate = listenLastRate;
     _defaultRate = defaultRate;
     path = Uri.parse(path).path;
     _index = index;
-    if (_index > 0 && shouldPlayNext) {
-      isPlayNextStreamInited = true;
-      onCompletion.listen((event) {
+
+    onCompletion.listen((event) {
+      setToZero();
+      if (_index > 0 && shouldPlayNext) {
+        isPlayNextStreamInited = true;
         playNext();
-      });
-    }
+      }
+    });
     _isPrepared = await AudioWaveformsInterface.instance.preparePlayer(
       path: path,
       key: playerKey,
@@ -292,9 +295,7 @@ class PlayerController extends ChangeNotifier {
   /// otherwise nothing happens.
   Future<void> seekTo(int progress) async {
     if (progress < 0) return;
-    if (_playerState == PlayerState.playing) {
-      await AudioWaveformsInterface.instance.seekTo(playerKey, progress);
-    }
+    await AudioWaveformsInterface.instance.seekTo(playerKey, progress);
   }
 
   Future<void> setToZero() async {
